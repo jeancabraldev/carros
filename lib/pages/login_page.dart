@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../widgets/button_widget.dart';
+import '../widgets/textfield_widget.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final _controllerLogin = TextEditingController(text: 'jcabral');
+
   final _controllerPassword = TextEditingController(text: '123');
+
   final _globalKey = GlobalKey<FormState>();
+
+  final _focusPassword = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +33,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  //Method body
   _body() {
     return Form(
       key: _globalKey,
@@ -24,65 +40,39 @@ class LoginPage extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: ListView(
           children: <Widget>[
-            _textField(null, 'Login',
-                controller: _controllerLogin, validator: _validateLogin),
+            TextFieldWidget(
+              null,
+              'Login',
+              controller: _controllerLogin,
+              validator: _validateLogin,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              focusNext: _focusPassword,
+            ),
             SizedBox(height: 10),
-            _textField(null, 'Senha',
-                obscureText: true,
-                controller: _controllerPassword, validator: _validatePassword),
+            TextFieldWidget(
+              null,
+              'Senha',
+              obscureText: true,
+              controller: _controllerPassword,
+              validator: _validatePassword,
+              keyboardType: TextInputType.number,
+              focusNode: _focusPassword,
+            ),
             SizedBox(
               height: 50,
             ),
-            _button('Login', _onClickLogin),
+            ButtonWidget(
+              'Login',
+              onPressed:  _onClickLogin,
+            ),
           ],
         ),
       ),
     );
   }
 
-  //Method TextField
-  _textField(
-    String label,
-    String hint, {
-    bool obscureText = false,
-    controller,
-    FormFieldValidator<String> validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      validator: validator,
-      style: TextStyle(
-        fontSize: 22,
-      ),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(
-          fontSize: 22,
-          color: Colors.black26,
-        ),
-      ),
-    );
-  }
-
-  //Method RaisedButton
-  _button(String text, Function onPressed) {
-    return Container(
-      height: 46,
-      child: RaisedButton(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 22,
-            color: Colors.white,
-          ),
-        ),
-        onPressed: onPressed,
-      ),
-    );
-  }
-
-  //Method login
+  //Method click button login
   _onClickLogin() {
     if (!_globalKey.currentState.validate()) {
       return;
@@ -102,14 +92,18 @@ class LoginPage extends StatelessWidget {
   }
 
   //Method validate password
-  String _validatePassword(String text){
-    if(text.isEmpty){
+  String _validatePassword(String text) {
+    if (text.isEmpty) {
       return 'Digite sua senha';
     }
-    if(text.length < 3){
+    if (text.length < 3) {
       return 'A senha precisa ter pelo menos 3 caracteres';
     }
     return null;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }
