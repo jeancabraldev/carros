@@ -38,12 +38,15 @@ class TextFieldWidget extends StatelessWidget {
         }
       },
       style: TextStyle(
-        fontSize: 22,
+        fontSize: 18,
       ),
       decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
         hintText: hint,
         hintStyle: TextStyle(
-          fontSize: 22,
+          fontSize: 18,
           color: Colors.black26,
         ),
       ),

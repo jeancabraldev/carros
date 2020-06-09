@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/textfield_widget.dart';
+import '../utils/navigator_page.dart';
+import '../pages/home_page.dart';
+import '../model/login_model.dart';
+import '../model/user.dart';
+import '../model/api_response.dart';
+import '../utils/alert.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,13 +15,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _controllerLogin = TextEditingController(text: 'jcabral');
+  final _controllerLogin = TextEditingController(text: 'user');
 
   final _controllerPassword = TextEditingController(text: '123');
 
   final _globalKey = GlobalKey<FormState>();
 
   final _focusPassword = FocusNode();
+
+  bool _showProgress = false;
 
   @override
   void initState() {
@@ -60,11 +68,12 @@ class _LoginPageState extends State<LoginPage> {
               focusNode: _focusPassword,
             ),
             SizedBox(
-              height: 50,
+              height: 10,
             ),
             ButtonWidget(
               'Login',
-              onPressed:  _onClickLogin,
+              onPressed: _onClickLogin,
+              showProgress: _showProgress,
             ),
           ],
         ),
@@ -73,14 +82,30 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //Method click button login
-  _onClickLogin() {
+  _onClickLogin() async {
     if (!_globalKey.currentState.validate()) {
       return;
     }
-
-    String login = _controllerLogin.text;
+    String user = _controllerLogin.text;
     String password = _controllerPassword.text;
-    print('$login / $password');
+
+    setState(() {
+      _showProgress = true;
+    });
+
+    ApiResponse response = await LoginModel.login(user, password);
+
+    if (response.ok) {
+      User users = response.result;
+
+      print('>>>> $users  ');
+      push(context, HomePage());
+    } else {
+      alert(context, response.msg);
+    }
+    setState(() {
+      _showProgress = false;
+    });
   }
 
   //Method validate login
