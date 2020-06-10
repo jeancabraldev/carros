@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       User users = response.result;
 
       print('>>>> $users  ');
-      push(context, HomePage());
+      push(context, HomePage(), replace: true);
     } else {
       alert(context, response.msg);
     }
